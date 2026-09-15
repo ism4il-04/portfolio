@@ -1,0 +1,98 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "skills": "Compétences",
+    "education": "Formation",
+    "experience": "Expérience",
+    "projects": "Projets",
+    "extracurricular": "Parascolaire",
+    "goals": "Objectifs",
+    "contact": "Contact"
+  },
+  "hero": {
+    "viewProjects": "Voir les projets",
+    "downloadResume": "Télécharger le CV",
+    "contactMe": "Me contacter",
+    "portraitAlt": "Portrait de {name}"
+  },
+  "sections": {
+    "about": "À propos",
+    "skills": "Compétences",
+    "education": "Formation",
+    "experience": "Expérience",
+    "projects": "Projets",
+    "featuredProjects": "Projets à la une",
+    "extracurricular": "Activités parascolaires",
+    "goals": "Objectifs",
+    "contact": "Contact"
+  },
+  "skills": {
+    "languages": "Langages",
+    "frameworks": "Frameworks",
+    "databases": "Bases de données",
+    "tools": "Outils"
+  },
+  "experience": {
+    "internship": "Stage",
+    "job": "Emploi",
+    "responsibilities": "Missions",
+    "technologies": "Technologies"
+  },
+  "extracurricular": {
+    "leadership": "Responsabilité",
+    "project": "Projet",
+    "committee": "Comité"
+  },
+  "goals": {
+    "short_term": "Court terme",
+    "long_term": "Long terme"
+  },
+  "projects": {
+    "all": "Tous les projets",
+    "count": "{count, plural, one {# projet} other {# projets}}",
+    "viewProject": "Voir le projet",
+    "viewDemo": "Voir la démo",
+    "viewCode": "Voir le code",
+    "backToProjects": "Retour aux projets",
+    "technologies": "Technologies",
+    "empty": "Aucun projet pour le moment."
+  },
+  "contact": {
+    "lead": "Une opportunité de stage, une question, ou simplement envie d'échanger ? Écrivez-moi — je réponds rapidement.",
+    "name": "Nom",
+    "email": "E-mail",
+    "subject": "Sujet",
+    "message": "Message",
+    "namePlaceholder": "Votre nom",
+    "emailPlaceholder": "vous@exemple.com",
+    "subjectPlaceholder": "Proposition de stage",
+    "messagePlaceholder": "Votre message…",
+    "optional": "facultatif",
+    "send": "Envoyer le message",
+    "sending": "Envoi en cours…",
+    "success": "Message bien reçu. Je vous réponds au plus vite.",
+    "error": "L'envoi a échoué. Réessayez, ou écrivez-moi directement par e-mail.",
+    "privacyNote": "Vos données ne servent qu'à répondre à ce message.",
+    "privacyLink": "Politique de confidentialité",
+    "errors": {
+      "name": "Indiquez votre nom (2 caractères minimum).",
+      "email": "Adresse e-mail invalide.",
+      "subject": "Sujet trop long (200 caractères maximum).",
+      "body": "Votre message doit faire entre 10 et 5000 caractères."
+    },
+    "captchaFailed": "Vérification anti-robot échouée. Réessayez."
+  },
+  "legal": {
+    "notice": "Mentions légales",
+    "privacy": "Politique de confidentialité",
+    "lastUpdated": "Dernière mise à jour : {date}"
+  },
+  "common": {
+    "switchLanguage": "Changer de langue",
+    "notFoundTitle": "Page introuvable",
+    "notFoundDescription": "La page que vous cherchez n'existe pas.",
+    "backHome": "Retour à l'accueil",
+    "skipToContent": "Aller au contenu principal"
+  }
+}

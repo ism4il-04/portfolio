@@ -1,0 +1,98 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "skills": "Skills",
+    "education": "Education",
+    "experience": "Experience",
+    "projects": "Projects",
+    "extracurricular": "Extracurricular",
+    "goals": "Goals",
+    "contact": "Contact"
+  },
+  "hero": {
+    "viewProjects": "View projects",
+    "downloadResume": "Download resume",
+    "contactMe": "Get in touch",
+    "portraitAlt": "Portrait of {name}"
+  },
+  "sections": {
+    "about": "About",
+    "skills": "Skills",
+    "education": "Education",
+    "experience": "Experience",
+    "projects": "Projects",
+    "featuredProjects": "Featured projects",
+    "extracurricular": "Extracurricular",
+    "goals": "Goals",
+    "contact": "Contact"
+  },
+  "skills": {
+    "languages": "Languages",
+    "frameworks": "Frameworks",
+    "databases": "Databases",
+    "tools": "Tools"
+  },
+  "experience": {
+    "internship": "Internship",
+    "job": "Job",
+    "responsibilities": "Responsibilities",
+    "technologies": "Technologies"
+  },
+  "extracurricular": {
+    "leadership": "Leadership",
+    "project": "Project",
+    "committee": "Committee"
+  },
+  "goals": {
+    "short_term": "Short term",
+    "long_term": "Long term"
+  },
+  "projects": {
+    "all": "All projects",
+    "count": "{count, plural, one {# project} other {# projects}}",
+    "viewProject": "View project",
+    "viewDemo": "View demo",
+    "viewCode": "View code",
+    "backToProjects": "Back to projects",
+    "technologies": "Technologies",
+    "empty": "No projects yet."
+  },
+  "contact": {
+    "lead": "An internship opportunity, a question, or just want to talk? Send me a message — I reply quickly.",
+    "name": "Name",
+    "email": "Email",
+    "subject": "Subject",
+    "message": "Message",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "you@example.com",
+    "subjectPlaceholder": "Internship opportunity",
+    "messagePlaceholder": "Your message…",
+    "optional": "optional",
+    "send": "Send message",
+    "sending": "Sending…",
+    "success": "Message received. I'll get back to you shortly.",
+    "error": "Sending failed. Please try again, or email me directly.",
+    "privacyNote": "Your details are used only to reply to this message.",
+    "privacyLink": "Privacy policy",
+    "errors": {
+      "name": "Please enter your name (2 characters minimum).",
+      "email": "Invalid email address.",
+      "subject": "Subject is too long (200 characters maximum).",
+      "body": "Your message must be between 10 and 5000 characters."
+    },
+    "captchaFailed": "Anti-bot check failed. Please try again."
+  },
+  "legal": {
+    "notice": "Legal notice",
+    "privacy": "Privacy policy",
+    "lastUpdated": "Last updated: {date}"
+  },
+  "common": {
+    "switchLanguage": "Switch language",
+    "notFoundTitle": "Page not found",
+    "notFoundDescription": "The page you are looking for does not exist.",
+    "backHome": "Back to home",
+    "skipToContent": "Skip to main content"
+  }
+}
