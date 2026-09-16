@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Reveal } from "@/components/Reveal";
 import { getProjects } from "@/lib/queries";
-import { alternates } from "@/lib/seo";
+import { alternates, socialMetadata } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -12,7 +12,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "sections" });
-  return { title: t("projects"), alternates: alternates("/projects", locale) };
+  return {
+    title: t("projects"),
+    alternates: alternates("/projects", locale),
+    ...socialMetadata({ title: t("projects"), path: "/projects", locale }),
+  };
 }
 
 export default async function ProjectsPage({

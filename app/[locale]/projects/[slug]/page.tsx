@@ -7,7 +7,7 @@ import { Reveal } from "@/components/Reveal";
 import { Link } from "@/i18n/navigation";
 import { pick } from "@/lib/localized";
 import { getProjectBySlug, getProjects } from "@/lib/queries";
-import { alternates } from "@/lib/seo";
+import { alternates, socialMetadata } from "@/lib/seo";
 
 export async function generateStaticParams() {
   const projects = await getProjects();
@@ -23,10 +23,14 @@ export async function generateMetadata({
   const project = await getProjectBySlug(slug);
   if (!project) return {};
 
+  const description = pick(project.description, locale) || undefined;
+  const path = `/projects/${slug}`;
+
   return {
     title: project.title,
-    description: pick(project.description, locale) || undefined,
-    alternates: alternates(`/projects/${slug}`, locale),
+    description,
+    alternates: alternates(path, locale),
+    ...socialMetadata({ title: project.title, description, path, locale }),
   };
 }
 

@@ -114,7 +114,8 @@ export async function submitContact(
         // visitor's address goes in replyTo instead.
         from: `"Portfolio" <${user}>`,
         to: process.env.CONTACT_TO_EMAIL ?? user,
-        replyTo: `"${parsed.data.name}" <${parsed.data.email}>`,
+        // Object form, so nodemailer escapes a visitor-supplied name itself.
+        replyTo: { name: parsed.data.name, address: parsed.data.email },
         subject: parsed.data.subject
           ? `Portfolio — ${parsed.data.subject}`
           : `Portfolio — message from ${parsed.data.name}`,

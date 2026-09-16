@@ -31,7 +31,20 @@ export function Reveal({
     );
 
     observer.observe(element);
-    return () => observer.disconnect();
+
+    // IntersectionObserver never calls back in a document that isn't being
+    // rendered — a background tab, or the headless screenshotters behind link
+    // previews — which would leave the hero blank. Content already on screen at
+    // mount is revealed by a timer instead; below-the-fold content still waits
+    // for a scroll. (requestAnimationFrame would be paused there too.)
+    const rect = element.getBoundingClientRect();
+    const onScreen = rect.top < window.innerHeight && rect.bottom > 0;
+    const timer = onScreen ? window.setTimeout(() => setVisible(true), 60) : 0;
+
+    return () => {
+      observer.disconnect();
+      window.clearTimeout(timer);
+    };
   }, []);
 
   return (

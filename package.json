@@ -19,12 +19,20 @@
     "next": "15.5.25",
     "next-auth": "^5.0.0-beta.32",
     "next-intl": "^4.14.5",
-    "nodemailer": "^8.0.11",
+    "nodemailer": "^10.0.10",
     "otpauth": "^9.5.2",
     "qrcode": "^1.5.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "zod": "^4.6.5"
+  },
+  "overrides": {
+    "next-auth": {
+      "nodemailer": "$nodemailer"
+    },
+    "@auth/core": {
+      "nodemailer": "$nodemailer"
+    }
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

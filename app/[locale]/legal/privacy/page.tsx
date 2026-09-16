@@ -4,7 +4,7 @@ import { setRequestLocale } from "next-intl/server";
 import { LegalDocument } from "@/components/LegalDocument";
 import { privacyPolicy } from "@/content/legal";
 import { routing } from "@/i18n/routing";
-import { alternates } from "@/lib/seo";
+import { alternates, socialMetadata } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -18,6 +18,8 @@ export async function generateMetadata({
     title: doc?.title,
     robots: { index: false, follow: true },
     alternates: alternates("/legal/privacy", locale),
+    ...(doc &&
+      socialMetadata({ title: doc.title, path: "/legal/privacy", locale })),
   };
 }
 
