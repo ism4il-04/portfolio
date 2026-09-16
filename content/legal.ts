@@ -10,7 +10,7 @@ export type LegalDoc = {
   sections: LegalSection[];
 };
 
-export const LEGAL_UPDATED = "2026-09-14";
+export const LEGAL_UPDATED = "2026-09-16";
 
 export const legalNotice: Record<"fr" | "en", LegalDoc> = {
   fr: {
@@ -154,8 +154,15 @@ export const privacyPolicy: Record<"fr" | "en", LegalDoc> = {
       {
         heading: "Durée de conservation",
         paragraphs: [
-          "Les messages sont conservés trois ans à compter du dernier échange, puis supprimés.",
+          "Les messages sont supprimés automatiquement trois ans après leur réception.",
           "Vous pouvez demander leur suppression à tout moment.",
+        ],
+      },
+      {
+        heading: "Journaux de sécurité",
+        paragraphs: [
+          "Pour protéger le site contre les abus, l'adresse IP est enregistrée temporairement lors de l'envoi d'un message (afin de limiter le nombre d'envois) et lors des tentatives de connexion échouées à l'espace d'administration (afin de bloquer les tentatives répétées).",
+          "La base légale est l'intérêt légitime à assurer la sécurité du site (article 6.1.f du RGPD). Ces données ne servent à rien d'autre et sont supprimées automatiquement au plus tard 30 jours après la dernière tentative.",
         ],
       },
       {
@@ -227,8 +234,15 @@ export const privacyPolicy: Record<"fr" | "en", LegalDoc> = {
       {
         heading: "Retention",
         paragraphs: [
-          "Messages are kept for three years from the last exchange, then deleted.",
+          "Messages are deleted automatically three years after they are received.",
           "You may request deletion at any time.",
+        ],
+      },
+      {
+        heading: "Security logs",
+        paragraphs: [
+          "To protect the site against abuse, your IP address is recorded temporarily when you send a message (to limit how many can be sent) and when a sign-in to the admin area fails (to block repeated attempts).",
+          "The legal basis is the legitimate interest in keeping the site secure (GDPR Article 6(1)(f)). This data is used for nothing else and is deleted automatically no later than 30 days after the last attempt.",
         ],
       },
       {

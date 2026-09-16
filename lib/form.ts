@@ -47,6 +47,50 @@ export function localizedList(
   };
 }
 
+/** Thrown when a submitted field can't be stored; carries the field name. */
+export class InvalidField extends Error {
+  constructor(readonly field: string) {
+    super(`Invalid value for ${field}`);
+  }
+}
+
+function httpsUrl(value: string): URL | null {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" ? url : null;
+  } catch {
+    return null;
+  }
+}
+
+// next/image refuses hosts missing from remotePatterns and throws mid-render,
+// so an image field only accepts what the site can actually display.
+function displayableImage(value: string): boolean {
+  if (value.startsWith("/") && !value.startsWith("//")) return true;
+  return httpsUrl(value)?.hostname === "res.cloudinary.com";
+}
+
+/** Optional link. Anything but https:// is rejected, not silently dropped. */
+export function link(formData: FormData, name: string): string | null {
+  const value = str(formData, name);
+  if (!value) return null;
+  if (!httpsUrl(value)) throw new InvalidField(name);
+  return value;
+}
+
+export function imageLink(formData: FormData, name: string): string | null {
+  const value = str(formData, name);
+  if (!value) return null;
+  if (!displayableImage(value)) throw new InvalidField(name);
+  return value;
+}
+
+export function imageLinks(formData: FormData, name: string): string[] {
+  const values = lines(formData, name);
+  if (!values.every(displayableImage)) throw new InvalidField(name);
+  return values;
+}
+
 export function slugify(value: string): string {
   return value
     .normalize("NFD")

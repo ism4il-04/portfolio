@@ -81,7 +81,8 @@
       "subject": "Subject is too long (200 characters maximum).",
       "body": "Your message must be between 10 and 5000 characters."
     },
-    "captchaFailed": "Anti-bot check failed. Please try again."
+    "captchaFailed": "Anti-bot check failed. Please try again.",
+    "rateLimited": "Too many messages sent recently. Please try again in an hour, or email me directly."
   },
   "legal": {
     "notice": "Legal notice",

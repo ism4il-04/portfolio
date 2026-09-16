@@ -144,9 +144,16 @@ export function ContactForm() {
         </p>
       )}
 
+      {state.status === "error" && state.rateLimited && (
+        <p role="alert" className="text-sm text-[#ff6b6b]">
+          {t("rateLimited")}
+        </p>
+      )}
+
       {state.status === "error" &&
         !state.invalidFields &&
-        !state.captchaFailed && (
+        !state.captchaFailed &&
+        !state.rateLimited && (
           <p role="alert" className="text-sm text-[#ff6b6b]">
             {t("error")}
           </p>

@@ -13,7 +13,7 @@ import { saveProfile } from "./actions";
 export default async function ProfileAdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{ saved?: string }>;
+  searchParams: Promise<{ saved?: string; invalid?: string }>;
 }) {
   const [profile, params] = await Promise.all([getProfile(), searchParams]);
 
@@ -23,7 +23,7 @@ export default async function ProfileAdminPage({
         title="Profile"
         description="Hero, about text, contact details and resume links."
       />
-      <Saved show={params.saved === "1"} />
+      <Saved show={params.saved === "1"} invalid={params.invalid} />
 
       <form action={saveProfile}>
         <input type="hidden" name="id" value={profile?.id ?? ""} />

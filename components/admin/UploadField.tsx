@@ -8,11 +8,19 @@ type ResourceType = "image" | "raw";
 const input =
   "w-full rounded-lg border border-line bg-panel-2/50 px-3 py-2 text-sm text-fg placeholder:text-line-2 transition-colors duration-200 focus:outline-none focus:border-accent";
 
+// Cloudinary's free plan rejects larger files anyway; failing here saves the
+// admin a slow upload that was never going to succeed.
+const MAX_BYTES = 10 * 1024 * 1024;
+
 async function uploadToCloudinary(
   file: File,
   folder: Folder,
   resourceType: ResourceType,
 ): Promise<string> {
+  if (file.size > MAX_BYTES) {
+    throw new Error("File is larger than 10 MB.");
+  }
+
   const signed = await fetch("/api/upload", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -33,6 +41,7 @@ async function uploadToCloudinary(
   body.append("timestamp", String(config.timestamp));
   body.append("signature", config.signature);
   body.append("folder", config.folder);
+  body.append("allowed_formats", config.allowedFormats);
 
   const response = await fetch(
     `https://api.cloudinary.com/v1_1/${config.cloudName}/${config.resourceType}/upload`,

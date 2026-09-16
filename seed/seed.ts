@@ -18,6 +18,24 @@ if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is not set — add it to .env.local first.");
 }
 
+// Seeding deletes every row before inserting. Pointed at the wrong database it
+// wipes the live site, so it refuses to run without an explicit --force and
+// names the host it would clear.
+const host = new URL(process.env.DATABASE_URL).host;
+if (!process.argv.includes("--force")) {
+  console.error(
+    [
+      `Refusing to seed ${host}.`,
+      "This DELETES every profile, skill, education, experience, project,",
+      "extracurricular and goal row, then re-inserts the seed data.",
+      "Check that host is not production, then run:",
+      "  npm run db:seed -- --force",
+    ].join("\n"),
+  );
+  process.exit(1);
+}
+console.log(`Seeding ${host}`);
+
 const db = drizzle(neon(process.env.DATABASE_URL), { schema });
 
 async function main() {

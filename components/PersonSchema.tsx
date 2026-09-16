@@ -41,10 +41,15 @@ export function PersonSchema({
     knowsAbout,
   };
 
+  // JSON.stringify leaves "</script>" intact, so a profile field containing it
+  // would close this tag and run whatever follows. < is still a valid "<"
+  // to any JSON parser but can never end the script element.
+  const json = JSON.stringify(data).replace(/</g, "\\u003c");
+
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: json }}
     />
   );
 }

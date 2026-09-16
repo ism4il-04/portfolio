@@ -5,6 +5,7 @@ import nodemailer from "nodemailer";
 import { z } from "zod";
 import { db } from "./db";
 import { messages } from "./schema";
+import { hit } from "./throttle";
 
 const ContactSchema = z.object({
   name: z.string().min(2).max(120),
@@ -13,23 +14,34 @@ const ContactSchema = z.object({
   body: z.string().min(10).max(5000),
 });
 
+// A real person sends one or two messages; anything past this is a flood.
+const MESSAGES_PER_IP_PER_HOUR = 3;
+
+// Notifications go out through a personal Gmail account, and Gmail suspends
+// sending for accounts that blow past its daily quota. Past this cap messages
+// are still saved and readable in the admin panel — only the email is skipped.
+const NOTIFICATION_EMAILS_PER_DAY = 40;
+
 export type ContactField = keyof z.infer<typeof ContactSchema>;
 
 export type ContactState = {
   status: "idle" | "success" | "error";
   invalidFields?: ContactField[];
   captchaFailed?: boolean;
+  rateLimited?: boolean;
 };
 
 /**
  * Cloudflare Turnstile. Tokens are single-use and tied to the issuing site key,
- * so a replayed or forged one fails here. Skipped entirely when no secret is
- * configured, which keeps local development workable — set both keys before
- * going live or the form has no bot protection at all.
+ * so a replayed or forged one fails here.
  */
 async function captchaPassed(token: string, ip: string | null) {
   const secret = process.env.TURNSTILE_SECRET_KEY;
-  if (!secret) return true;
+
+  // Without a secret there is nothing to verify against. Locally that's a
+  // convenience; on Vercel it means a missing env var, and silently waving
+  // every submission through would switch bot protection off unnoticed.
+  if (!secret) return process.env.VERCEL !== "1";
   if (!token) return false;
 
   const body = new URLSearchParams({ secret, response: token });
@@ -89,6 +101,13 @@ export async function submitContact(
     return { status: "error", invalidFields };
   }
 
+  // Counted only once a submission has passed the CAPTCHA and validation, so
+  // a visitor fixing a typo doesn't burn their allowance.
+  const sent = await hit(`contact:${ip ?? "unknown"}`, 60 * 60);
+  if (sent > MESSAGES_PER_IP_PER_HOUR) {
+    return { status: "error", rateLimited: true };
+  }
+
   const locale = text(formData, "locale") || "fr";
 
   try {
@@ -101,35 +120,41 @@ export async function submitContact(
   const pass = process.env.GMAIL_APP_PASSWORD;
 
   if (user && pass) {
-    try {
-      const transport = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 465,
-        secure: true,
-        auth: { user, pass },
-      });
+    const emailsToday = await hit("contact-email:day", 24 * 60 * 60);
 
-      await transport.sendMail({
-        // Gmail rewrites any other sender to the authenticated account, so the
-        // visitor's address goes in replyTo instead.
-        from: `"Portfolio" <${user}>`,
-        to: process.env.CONTACT_TO_EMAIL ?? user,
-        // Object form, so nodemailer escapes a visitor-supplied name itself.
-        replyTo: { name: parsed.data.name, address: parsed.data.email },
-        subject: parsed.data.subject
-          ? `Portfolio — ${parsed.data.subject}`
-          : `Portfolio — message from ${parsed.data.name}`,
-        text: [
-          `From: ${parsed.data.name} <${parsed.data.email}>`,
-          `Locale: ${locale}`,
-          "",
-          parsed.data.body,
-        ].join("\n"),
-      });
-    } catch (error) {
-      // The message is already saved; a mail outage shouldn't look like a failure
-      // to the sender. It stays readable in the admin panel.
-      console.error("Contact email delivery failed", error);
+    if (emailsToday > NOTIFICATION_EMAILS_PER_DAY) {
+      console.warn("Daily notification email cap reached; message saved only");
+    } else {
+      try {
+        const transport = nodemailer.createTransport({
+          host: "smtp.gmail.com",
+          port: 465,
+          secure: true,
+          auth: { user, pass },
+        });
+
+        await transport.sendMail({
+          // Gmail rewrites any other sender to the authenticated account, so
+          // the visitor's address goes in replyTo instead.
+          from: `"Portfolio" <${user}>`,
+          to: process.env.CONTACT_TO_EMAIL ?? user,
+          // Object form, so nodemailer escapes a visitor-supplied name itself.
+          replyTo: { name: parsed.data.name, address: parsed.data.email },
+          subject: parsed.data.subject
+            ? `Portfolio — ${parsed.data.subject}`
+            : `Portfolio — message from ${parsed.data.name}`,
+          text: [
+            `From: ${parsed.data.name} <${parsed.data.email}>`,
+            `Locale: ${locale}`,
+            "",
+            parsed.data.body,
+          ].join("\n"),
+        });
+      } catch (error) {
+        // The message is already saved; a mail outage shouldn't look like a
+        // failure to the sender. It stays readable in the admin panel.
+        console.error("Contact email delivery failed", error);
+      }
     }
   }
 

@@ -2,15 +2,20 @@
 
 import { and, eq, ne } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import { requireAdmin, revalidateAllLocales } from "@/lib/admin";
+import {
+  parseOrBounce,
+  requireAdmin,
+  revalidateAllLocales,
+} from "@/lib/admin";
 import { db } from "@/lib/db";
 import {
   bool,
   csv,
+  imageLink,
+  imageLinks,
   int,
-  lines,
+  link,
   localized,
-  optional,
   slugify,
   str,
 } from "@/lib/form";
@@ -47,39 +52,40 @@ async function uniqueSlug(desired: string, excludeId?: string) {
 }
 
 function fields(formData: FormData) {
-  return {
+  return parseOrBounce("/admin/projects", () => ({
     title: str(formData, "title"),
     description: localized(formData, "description"),
     technologies: csv(formData, "technologies"),
     featured: bool(formData, "featured"),
-    thumbnailUrl: optional(formData, "thumbnailUrl"),
-    gallery: lines(formData, "gallery"),
-    demoUrl: optional(formData, "demoUrl"),
-    repoUrl: optional(formData, "repoUrl"),
+    thumbnailUrl: imageLink(formData, "thumbnailUrl"),
+    gallery: imageLinks(formData, "gallery"),
+    demoUrl: link(formData, "demoUrl"),
+    repoUrl: link(formData, "repoUrl"),
     order: int(formData, "order"),
-  };
+  }));
 }
 
 export async function createProject(formData: FormData) {
   await requireAdmin();
-  const title = str(formData, "title");
-  const slug = await uniqueSlug(slugify(str(formData, "slug") || title));
-  await db.insert(projects).values({ ...fields(formData), slug });
+  const values = fields(formData);
+  const slug = await uniqueSlug(slugify(str(formData, "slug") || values.title));
+  await db.insert(projects).values({ ...values, slug });
   done(slug);
 }
 
 export async function updateProject(formData: FormData) {
   await requireAdmin();
+  const values = fields(formData);
   const id = str(formData, "id");
   const previousSlug = str(formData, "previousSlug");
   const slug = await uniqueSlug(
-    slugify(str(formData, "slug") || str(formData, "title")),
+    slugify(str(formData, "slug") || values.title),
     id,
   );
 
   await db
     .update(projects)
-    .set({ ...fields(formData), slug })
+    .set({ ...values, slug })
     .where(eq(projects.id, id));
 
   // A renamed project leaves a stale page behind at the old path.

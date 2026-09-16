@@ -2,15 +2,26 @@
 
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import { requireAdmin, revalidateAllLocales } from "@/lib/admin";
+import {
+  parseOrBounce,
+  requireAdmin,
+  revalidateAllLocales,
+} from "@/lib/admin";
 import { db } from "@/lib/db";
-import { localized, localizedList, optional, str } from "@/lib/form";
+import {
+  imageLink,
+  link,
+  localized,
+  localizedList,
+  optional,
+  str,
+} from "@/lib/form";
 import { profile } from "@/lib/schema";
 
 export async function saveProfile(formData: FormData) {
   await requireAdmin();
 
-  const values = {
+  const values = parseOrBounce("/admin/profile", () => ({
     name: str(formData, "name"),
     title: localized(formData, "title"),
     tagline: localized(formData, "tagline"),
@@ -18,13 +29,13 @@ export async function saveProfile(formData: FormData) {
     location: optional(formData, "location"),
     email: optional(formData, "email"),
     phone: optional(formData, "phone"),
-    githubUrl: optional(formData, "githubUrl"),
+    githubUrl: link(formData, "githubUrl"),
     aboutSummary: localizedList(formData, "aboutSummary"),
-    avatarUrl: optional(formData, "avatarUrl"),
-    resumeUrlFr: optional(formData, "resumeUrlFr"),
-    resumeUrlEn: optional(formData, "resumeUrlEn"),
+    avatarUrl: imageLink(formData, "avatarUrl"),
+    resumeUrlFr: link(formData, "resumeUrlFr"),
+    resumeUrlEn: link(formData, "resumeUrlEn"),
     updatedAt: new Date(),
-  };
+  }));
 
   const id = str(formData, "id");
   if (id) {

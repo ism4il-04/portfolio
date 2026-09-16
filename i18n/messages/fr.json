@@ -81,7 +81,8 @@
       "subject": "Sujet trop long (200 caractères maximum).",
       "body": "Votre message doit faire entre 10 et 5000 caractères."
     },
-    "captchaFailed": "Vérification anti-robot échouée. Réessayez."
+    "captchaFailed": "Vérification anti-robot échouée. Réessayez.",
+    "rateLimited": "Trop de messages envoyés récemment. Réessayez dans une heure, ou écrivez-moi directement par e-mail."
   },
   "legal": {
     "notice": "Mentions légales",

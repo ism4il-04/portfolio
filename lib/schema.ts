@@ -103,6 +103,15 @@ export const loginAttempts = pgTable("login_attempts", {
   lastFailureAt: timestamp("last_failure_at").defaultNow(),
 });
 
+// Fixed-window counters for throttling anything other than login, e.g.
+// "contact:<ip>" or "contact-email:day". Rows are disposable; a purge job
+// removes stale windows.
+export const rateLimits = pgTable("rate_limits", {
+  key: varchar("key", { length: 160 }).primaryKey(),
+  count: integer("count").notNull().default(0),
+  windowStart: timestamp("window_start").notNull().defaultNow(),
+});
+
 // Single row. Tracks the newest consumed TOTP step so a captured code cannot be
 // replayed inside its validity window.
 export const authState = pgTable("auth_state", {

@@ -6,6 +6,11 @@ import { auth } from "@/lib/auth";
 // Folders are an allow-list rather than caller-supplied text: the signature
 // authorises whatever folder it is signed with, so a free-form value would let
 // a signed request write anywhere in the account.
+const ALLOWED_FORMATS = {
+  image: "jpg,jpeg,png,webp,avif,gif",
+  raw: "pdf",
+} as const;
+
 const Body = z.object({
   folder: z.enum(["portfolio/profile", "portfolio/projects"]),
   resourceType: z.enum(["image", "raw"]),
@@ -35,11 +40,13 @@ export async function POST(request: Request) {
 
   const timestamp = Math.round(Date.now() / 1000);
   const folder = parsed.data.folder;
+  const allowedFormats = ALLOWED_FORMATS[parsed.data.resourceType];
 
   // Every parameter the browser sends must also be signed, or Cloudinary
-  // rejects the upload.
+  // rejects the upload. Signing allowed_formats means the restriction is
+  // enforced by Cloudinary, not just by the admin form's file picker.
   const signature = cloudinary.utils.api_sign_request(
-    { timestamp, folder },
+    { timestamp, folder, allowed_formats: allowedFormats },
     apiSecret,
   );
 
@@ -49,6 +56,7 @@ export async function POST(request: Request) {
     timestamp,
     signature,
     folder,
+    allowedFormats,
     resourceType: parsed.data.resourceType,
   });
 }

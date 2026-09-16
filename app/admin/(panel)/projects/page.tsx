@@ -72,7 +72,7 @@ function Fields({ entry, order }: { entry?: Entry; order: number }) {
 export default async function ProjectsAdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{ saved?: string }>;
+  searchParams: Promise<{ saved?: string; invalid?: string }>;
 }) {
   const [entries, params] = await Promise.all([getProjects(), searchParams]);
 
@@ -82,7 +82,7 @@ export default async function ProjectsAdminPage({
         title="Projects"
         description="Titles and technology names stay untranslated."
       />
-      <Saved show={params.saved === "1"} />
+      <Saved show={params.saved === "1"} invalid={params.invalid} />
 
       <Card>
         <form action={createProject}>
