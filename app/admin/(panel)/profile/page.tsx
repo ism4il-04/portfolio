@@ -84,6 +84,11 @@ export default async function ProfileAdminPage({
                 label="GitHub URL"
                 defaultValue={profile?.githubUrl}
               />
+              <Text
+                name="linkedinUrl"
+                label="LinkedIn URL"
+                defaultValue={profile?.linkedinUrl}
+              />
             </div>
           </Card>
 

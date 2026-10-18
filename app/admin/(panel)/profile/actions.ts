@@ -30,6 +30,7 @@ export async function saveProfile(formData: FormData) {
     email: optional(formData, "email"),
     phone: optional(formData, "phone"),
     githubUrl: link(formData, "githubUrl"),
+    linkedinUrl: link(formData, "linkedinUrl"),
     aboutSummary: localizedList(formData, "aboutSummary"),
     avatarUrl: imageLink(formData, "avatarUrl"),
     resumeUrlFr: link(formData, "resumeUrlFr"),

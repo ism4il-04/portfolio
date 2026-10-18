@@ -20,6 +20,10 @@ export function PersonSchema({
     .map((part) => part.trim());
 
   const pageUrl = `${siteUrl}/${locale}`;
+  // sameAs is how Google ties this page, GitHub and LinkedIn to one person.
+  const sameAs = [profile.githubUrl, profile.linkedinUrl].filter(
+    (url): url is string => Boolean(url),
+  );
 
   const person = {
     "@type": "Person",
@@ -41,7 +45,7 @@ export function PersonSchema({
         ...(country && { addressCountry: country }),
       },
     }),
-    ...(profile.githubUrl && { sameAs: [profile.githubUrl] }),
+    ...(sameAs.length > 0 && { sameAs }),
     ...(alumniOf.length > 0 && {
       alumniOf: alumniOf.map((name) => ({
         "@type": "EducationalOrganization",

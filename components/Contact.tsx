@@ -49,6 +49,23 @@ export async function Contact({ profile }: { profile: Profile }) {
                 </dd>
               </div>
             )}
+            {profile.linkedinUrl && (
+              <div>
+                <dt className="text-xs text-line-2">linkedin</dt>
+                <dd>
+                  <a
+                    href={profile.linkedinUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-muted transition-colors hover:text-accent"
+                  >
+                    {profile.linkedinUrl
+                      .replace(/^https?:\/\/(www\.)?/, "")
+                      .replace(/\/$/, "")}
+                  </a>
+                </dd>
+              </div>
+            )}
             {profile.location && (
               <div>
                 <dt className="text-xs text-line-2">location</dt>

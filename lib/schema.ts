@@ -22,6 +22,7 @@ export const profile = pgTable("profile", {
   email: varchar("email", { length: 160 }),
   phone: varchar("phone", { length: 40 }),
   githubUrl: text("github_url"),
+  linkedinUrl: text("linkedin_url"),
   availability: jsonb("availability").$type<Localized>(),
   aboutSummary: jsonb("about_summary").$type<LocalizedList>(),
   avatarUrl: text("avatar_url"),

@@ -29,6 +29,16 @@ export async function Footer({ profile }: { profile: Profile }) {
               GitHub
             </a>
           )}
+          {profile.linkedinUrl && (
+            <a
+              href={profile.linkedinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted transition-colors hover:text-accent"
+            >
+              LinkedIn
+            </a>
+          )}
           {profile.phone && <span className="text-line-2">{profile.phone}</span>}
         </div>
 
