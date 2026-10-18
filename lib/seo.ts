@@ -1,4 +1,6 @@
 import { routing } from "@/i18n/routing";
+import { pick } from "@/lib/localized";
+import type { profile as profileTable } from "@/lib/schema";
 
 // VERCEL_PROJECT_PRODUCTION_URL is set by Vercel itself, so a forgotten
 // NEXT_PUBLIC_SITE_URL still yields real canonical links rather than localhost.
@@ -63,4 +65,35 @@ export function alternates(path: string, locale: string) {
       "x-default": `/${routing.defaultLocale}${path}`,
     },
   };
+}
+
+/**
+ * The tagline alone (~75 characters) leaves most of the snippet Google shows
+ * unused. Name, role, city and availability are what a recruiter searches for,
+ * so they go first; the result stays under ~160 characters in practice.
+ */
+export function metaDescription(
+  profile: typeof profileTable.$inferSelect,
+  locale: string,
+) {
+  const title = pick(profile.title, locale);
+  const city = profile.location?.split(",")[0]?.trim();
+  const tagline = pick(profile.tagline, locale);
+  const availability = pick(profile.availability, locale);
+
+  const lead = [profile.name, title].filter(Boolean).join(", ");
+  return [city ? `${lead} (${city})` : lead, tagline, availability]
+    .filter(Boolean)
+    .map((part) => part.replace(/[.\s]+$/, ""))
+    .join(". ")
+    .concat(".");
+}
+
+/** Cloudinary resizes on delivery; social cards and OG renders want small JPEGs. */
+export function cloudinaryThumb(url: string, size: number) {
+  if (!url.startsWith("https://res.cloudinary.com/")) return url;
+  return url.replace(
+    "/image/upload/",
+    `/image/upload/c_fill,g_face,w_${size},h_${size},f_jpg,q_85/`,
+  );
 }

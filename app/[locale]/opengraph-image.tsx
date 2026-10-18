@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { routing } from "@/i18n/routing";
 import { pick } from "@/lib/localized";
 import { getProfile } from "@/lib/queries";
+import { cloudinaryThumb, siteUrl } from "@/lib/seo";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -23,6 +24,16 @@ export default async function OpengraphImage({
   const title = pick(profile?.title, locale);
   const availability = pick(profile?.availability, locale);
 
+  // Search engines and social networks pick a page's thumbnail from its og:image
+  // first, so the card carries the portrait — otherwise they fall back to
+  // whatever photo they indexed earlier. Satori decodes PNG/JPEG only, which the
+  // Cloudinary transform guarantees (and shrinks a multi-MB upload to ~40 kB).
+  const avatar = profile?.avatarUrl
+    ? profile.avatarUrl.startsWith("/")
+      ? `${siteUrl}${profile.avatarUrl}`
+      : cloudinaryThumb(profile.avatarUrl, 600)
+    : null;
+
   return new ImageResponse(
     (
       <div
@@ -42,7 +53,7 @@ export default async function OpengraphImage({
             position: "absolute",
             top: 0,
             left: 0,
-            width: "100%",
+            right: 0,
             height: 6,
             background: "linear-gradient(90deg, #38bdf8 0%, #a78bfa 100%)",
           }}
@@ -77,6 +88,24 @@ export default async function OpengraphImage({
             </div>
           )}
         </div>
+
+        {avatar && (
+          // eslint-disable-next-line @next/next/no-img-element -- rendered by Satori, not the browser
+          <img
+            src={avatar}
+            alt=""
+            width={300}
+            height={300}
+            style={{
+              position: "absolute",
+              right: 80,
+              top: 165,
+              borderRadius: 999,
+              border: "4px solid rgba(56, 189, 248, 0.45)",
+              objectFit: "cover",
+            }}
+          />
+        )}
 
         {availability && (
           <div

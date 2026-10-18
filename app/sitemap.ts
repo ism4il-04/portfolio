@@ -1,10 +1,13 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
-import { getProjects } from "@/lib/queries";
+import { getProfile, getProjects } from "@/lib/queries";
 import { siteUrl } from "@/lib/seo";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const projects = await getProjects();
+  const [projects, profile] = await Promise.all([getProjects(), getProfile()]);
+  // A lastmod that changes on every build teaches Google to ignore it; only
+  // the profile row records real edits, so only the home page claims one.
+  const homeModified = profile?.updatedAt ?? undefined;
 
   const paths = [
     "",
@@ -15,7 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return paths.flatMap((path) =>
     routing.locales.map((locale) => ({
       url: `${siteUrl}/${locale}${path}`,
-      lastModified: new Date(),
+      ...(path === "" && homeModified && { lastModified: homeModified }),
       changeFrequency: "monthly" as const,
       priority: path === "" ? 1 : 0.7,
       alternates: {

@@ -9,7 +9,7 @@ import { Header } from "@/components/Header";
 import { routing } from "@/i18n/routing";
 import { pick } from "@/lib/localized";
 import { getProfile } from "@/lib/queries";
-import { siteUrl } from "@/lib/seo";
+import { metaDescription, siteUrl } from "@/lib/seo";
 import "../globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -32,14 +32,20 @@ export async function generateMetadata({
 
   const name = profile?.name ?? "Portfolio";
   const title = pick(profile?.title, locale);
-  const description = pick(profile?.tagline, locale);
+  const description = profile ? metaDescription(profile, locale) : undefined;
 
   return {
     metadataBase: new URL(siteUrl),
     title: { default: title ? `${name} — ${title}` : name, template: `%s · ${name}` },
     description,
-    authors: [{ name }],
+    authors: [{ name, url: `${siteUrl}/${locale}` }],
     creator: name,
+    // Lets Google show the portrait as a large thumbnail and use full snippets.
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+    },
     openGraph: {
       type: "profile",
       siteName: name,

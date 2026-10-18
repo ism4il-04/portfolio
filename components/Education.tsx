@@ -26,10 +26,14 @@ export async function Education({
     <section id="education" className="mx-auto max-w-5xl px-6 py-24">
       <SectionHeading index="03" title={t("education")} />
 
-      <div className="relative border-l border-line pl-8">
+      {/* Spacing lives on the list, not on each article: every article is the
+          only child of its Reveal wrapper, so a `last:pb-0` on it always matched
+          and the entries ran together — each date looked like it closed the
+          entry above instead of opening its own. */}
+      <div className="relative flex flex-col gap-12 border-l border-line pl-8">
         {entries.map((entry, i) => (
           <Reveal key={entry.id} delay={i * 0.06}>
-            <article className="group relative pb-10 last:pb-0">
+            <article className="group relative">
               <span className="absolute top-1.5 -left-[2.28rem] size-3 rounded-full border-2 border-line bg-ink transition-colors duration-300 group-hover:border-accent" />
 
               <p className="font-mono text-xs text-accent">

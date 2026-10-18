@@ -60,6 +60,9 @@ export default async function HomePage({
   if (!profile) notFound();
 
   const allSkills = [...skills.values()].flat().map((skill) => skill.name);
+  const institutions = [
+    ...new Set(education.flatMap((entry) => entry.institution ?? [])),
+  ];
 
   return (
     <>
@@ -67,6 +70,7 @@ export default async function HomePage({
         profile={profile}
         locale={locale}
         knowsAbout={allSkills}
+        alumniOf={institutions}
       />
       <Hero profile={profile} locale={locale} />
       <About summary={profile.aboutSummary} locale={locale} />
